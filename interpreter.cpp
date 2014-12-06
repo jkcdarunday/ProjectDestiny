@@ -145,13 +145,14 @@ void Interpreter::execute()
             }else
                 qDebug() << "Syntax Error : Assigning string to non-existant variable :(";
         }
-
         else if(syntaxCheck(lastN, ".v\n")){
             if(this->symbols->contains(this->lexemes->at(lastN+1).token) && QString("f01\"").contains(this->symbols->value(this->lexemes->at(lastN+1).token)->type))
                 emit output(this->symbols->value(this->lexemes->at(lastN+1).token)->value);
             else
                 qDebug() << "Syntax Error : Printed a variable that does not exist or is noob:(";
-        }else {
+        }else if(syntaxCheck(lastN, ".t\n")){
+                emit output(this->lexemes->at(lastN+1).token);
+        }else{
             qDebug() << "Syntax Error near : " << this->lexemes->at(lastN).token;
         }
 
