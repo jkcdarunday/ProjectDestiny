@@ -126,39 +126,43 @@ void Interpreter::execute()
     int lastN = 0;
     do{
         //i has a var
-        if(syntaxCheck(lastN,"iv\n")){
+        if(syntaxCheck(lastN,"iv\n"))
             if(!this->symbols->contains(lexemes->at(lastN+1).token))
                 this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('x',""));
-            else
-                qDebug() << "Syntax Error : Declaring already-existing variable :(";
-        }
-        else if(syntaxCheck(lastN,"iv#t\n")){
+            else qDebug() << "Syntax Error : Declaring already-existing variable :(";
+
+
+        //i has a var itz something
+        else if(syntaxCheck(lastN,"iv#t\n"))
             if(!this->symbols->contains(lexemes->at(lastN+1).token))
                 this->symbols->insert(lexemes->at(lastN+1).token, new VariableData(lexemes->at(lastN+3).type,lexemes->at(lastN+3).token));
-            else
-                qDebug() << "Syntax Error : Declaring already-existing variable to string :(";
-        }
-        else if(syntaxCheck(lastN,"v:t\n")){
+            else qDebug() << "Syntax Error : Declaring already-existing variable to string :(";
+
+
+        //var r loli
+        else if(syntaxCheck(lastN,"v:t\n"))
             if(this->symbols->contains(lexemes->at(lastN).token)){
                 this->symbols->value(lexemes->at(lastN).token)->value=lexemes->at(lastN+2).token;
                 this->symbols->value(lexemes->at(lastN).token)->type=lexemes->at(lastN+2).type;
-            }else
-                qDebug() << "Syntax Error : Assigning string to non-existant variable :(";
-        }
-        else if(syntaxCheck(lastN, ".v\n")){
+            }else qDebug() << "Syntax Error : Assigning string to non-existant variable :(";
+
+
+        //visible var
+        else if(syntaxCheck(lastN, ".v\n"))
             if(this->symbols->contains(this->lexemes->at(lastN+1).token) && QString("f01\"").contains(this->symbols->value(this->lexemes->at(lastN+1).token)->type))
                 emit output(this->symbols->value(this->lexemes->at(lastN+1).token)->value);
-            else
-                qDebug() << "Syntax Error : Printed a variable that does not exist or is noob:(";
-        }else if(syntaxCheck(lastN, ".t\n")){
-                emit output(this->lexemes->at(lastN+1).token);
-        }else{
-            qDebug() << "Syntax Error near : " << this->lexemes->at(lastN).token;
-        }
+            else qDebug() << "Syntax Error : Printed a variable that does not exist or is noob:(";
 
-        do{
-            lastN++;
-        }while(lastN!=lexemes->size()-1 && this->lexemes->at(lastN-1).type != '\n');
+
+        //visible "loli"
+        else if(syntaxCheck(lastN, ".t\n"))
+            emit output(this->lexemes->at(lastN+1).token);
+
+        else
+            qDebug() << "Syntax Error near : " << this->lexemes->at(lastN).token;
+
+        //go to the next newline
+        do lastN++; while(lastN!=lexemes->size()-1 && this->lexemes->at(lastN-1).type != '\n');
     }while(lastN!=lexemes->size()-1);
 }
 
