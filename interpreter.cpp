@@ -23,7 +23,12 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('>',"Arithmetic Operation", "BIGGR\\s+OF\\s*"));
     regexes->append(new LexemeRegex('<',"Arithmetic Operation", "SMALLR\\s+OF\\s*"));
 
-    regexes->append(new LexemeRegex('b', "Boolean Operation", "(:?BOTH|EITHER|WON|NOT|ANY)\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('&', "Boolean Operation", "BOTH\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('|', "Boolean Operation", "EITHER\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('^', "Boolean Operation", "WON\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('!', "Boolean Operation", "NOT\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('y', "Boolean Operation", "ANY\\s+OF\\s*"));
+
     regexes->append(new LexemeRegex('s', "String Operation", "SMOOSH\\s*"));
 
     regexes->append(new LexemeRegex('n', "Delimiter", "AN\\s*"));
