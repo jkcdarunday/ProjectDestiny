@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/toolbar">
+        <file>document-open.svg</file>
+        <file>document-save.svg</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>link.jpg</file>
+    </qresource>
+</RCC>
