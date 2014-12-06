@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>737</width>
-    <height>541</height>
+    <width>735</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,6 +91,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTableWidget" name="lexemeTable">
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Lexeme</string>
@@ -105,6 +108,9 @@
        </item>
        <item>
         <widget class="QTableWidget" name="symbolTable">
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Data Type</string>
@@ -132,7 +138,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>737</width>
+     <width>735</width>
      <height>20</height>
     </rect>
    </property>
