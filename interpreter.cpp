@@ -134,72 +134,21 @@ void Interpreter::execute()
             else
                 qDebug() << "Syntax Error : Declaring already-existing variable :(";
         }
-        else if(syntaxCheck(lastN,"iv#f\n")){
-            //            qDebug() << "I has a var itz float";
+        else if(syntaxCheck(lastN,"iv#t\n")){
             if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('f',lexemes->at(lastN+3).token));
-            else
-                qDebug() << "Syntax Error : Declaring already-existing variable to float :(";
-        }
-        else if(syntaxCheck(lastN,"iv#\"\n")){
-            //            qDebug() << "I has a var itz string";
-            if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('\"',lexemes->at(lastN+3).token));
+                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData(lexemes->at(lastN+3).type,lexemes->at(lastN+3).token));
             else
                 qDebug() << "Syntax Error : Declaring already-existing variable to string :(";
         }
-        else if(syntaxCheck(lastN,"iv#0\n")){
-            //            qDebug() << "I has a var itz int";
-            if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('0',lexemes->at(lastN+3).token));
-            else
-                qDebug() << "Syntax Error : Declaring already-existing variable to integer :(";
-        }
-        else if(syntaxCheck(lastN,"iv#1\n")){
-            //            qDebug() << "I has a var itz bool";
-            if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('1',lexemes->at(lastN+3).token));
-            else
-                qDebug() << "Syntax Error : Declaring already-existing variable to boolean :(";
-        }
-
-        else if(syntaxCheck(lastN,"v:f\n")){
-            //            qDebug() << "var r float";
-            if(this->symbols->contains(lexemes->at(lastN).token)){
-                this->symbols->value(lexemes->at(lastN).token)->value=lexemes->at(lastN+2).token;
-                this->symbols->value(lexemes->at(lastN).token)->type='f';
-            }else
-                qDebug() << "Syntax Error : Assigning float to non-existant variable :(";
-        }
-        else if(syntaxCheck(lastN,"v:\"\n")){
+        else if(syntaxCheck(lastN,"v:t\n")){
             //            qDebug() << "var r string";
             if(this->symbols->contains(lexemes->at(lastN).token)){
                 this->symbols->value(lexemes->at(lastN).token)->value=lexemes->at(lastN+2).token;
-                this->symbols->value(lexemes->at(lastN).token)->type='\"';
+                this->symbols->value(lexemes->at(lastN).token)->type=lexemes->at(lastN+2).type;
             }else
                 qDebug() << "Syntax Error : Assigning string to non-existant variable :(";
         }
-        else if(syntaxCheck(lastN,"v:0\n")){
-            //qDebug() << "var r int";
-            if(this->symbols->contains(lexemes->at(lastN).token)){
-                this->symbols->value(lexemes->at(lastN).token)->value=lexemes->at(lastN+2).token;
-                this->symbols->value(lexemes->at(lastN).token)->type='0';
-            }else
-                qDebug() << "Syntax Error : Assigning int to non-existant variable :(";
-        }
-        else if(syntaxCheck(lastN,"v:1\n")){
-            //qDebug() << "var r bool";
-            if(this->symbols->contains(lexemes->at(lastN).token)){
-                this->symbols->value(lexemes->at(lastN).token)->value=lexemes->at(lastN+2).token;
-                this->symbols->value(lexemes->at(lastN).token)->type='1';
-            }else
-                qDebug() << "Syntax Error : Assigning boolean to non-existant variable :(";
-        }
 
-        else if(syntaxCheck(lastN, ".f\n") || syntaxCheck(lastN, ".\"\n") || syntaxCheck(lastN, ".0\n") || syntaxCheck(lastN, ".1\n")){
-            //qDebug() << "Displaying" << this->lexemes->at(lastN+1).token;
-            emit output(this->lexemes->at(lastN+1).token);
-        }
         else if(syntaxCheck(lastN, ".v\n")){
             //qDebug() << "Immaprintthisvar";
             if(this->symbols->contains(this->lexemes->at(lastN+1).token) && QString("f01\"").contains(this->symbols->value(this->lexemes->at(lastN+1).token)->type))
@@ -227,9 +176,10 @@ bool Interpreter::syntaxCheck(int si, QString s)
     int ss = s.size();
     if(si+ss > lexemes->size())
         return false;
-    for(int i=0;i<ss;i++)
-        if(s.at(i) != lexemes->at(si+i).type)
+    for(int i=0;i<ss;i++){
+        if(s.at(i) != lexemes->at(si+i).type && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type)))
             return false;
+    }
     return true;
 }
 
