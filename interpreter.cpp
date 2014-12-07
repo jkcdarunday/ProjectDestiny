@@ -138,6 +138,16 @@ void Interpreter::execute()
                 this->symbols->insert(lexemes->at(lastN+1).token, new VariableData(lexemes->at(lastN+3).type,lexemes->at(lastN+3).token));
             else qDebug() << "Syntax Error : Declaring already-existing variable to string :(";
 
+        //i has a var itz expression
+        else if(syntaxCheck(lastN,"iv#o")){
+            int nn=lastN;
+            do nn++; while(nn+1!=lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n');
+            VariableData *tmp = this->processExpression(lastN+3,nn);
+            if(tmp==NULL)
+                qDebug() << "Syntax Error : Problem executing expression";
+            else if(!this->symbols->contains(lexemes->at(lastN+1).token))
+                this->symbols->insert(lexemes->at(lastN+1).token, tmp);
+        }
 
         //var r loli
         else if(syntaxCheck(lastN,"v:t\n"))
@@ -146,6 +156,19 @@ void Interpreter::execute()
                 this->symbols->value(lexemes->at(lastN).token)->type=lexemes->at(lastN+2).type;
             }else qDebug() << "Syntax Error : Assigning string to non-existant variable :(";
 
+
+        //var r expression
+        else if(syntaxCheck(lastN,"v:o")){
+            int nn=lastN;
+            do nn++; while(nn+1!=lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n');
+            VariableData *tmp = this->processExpression(lastN+2,nn);
+            if(tmp==NULL)
+                qDebug() << "Syntax Error : Problem executing expression";
+            else if(this->symbols->contains(lexemes->at(lastN).token))
+                this->symbols->insert(lexemes->at(lastN).token, tmp);
+            else
+                qDebug() << "Syntax Error : Variable " + this->lexemes->at(lastN).token + " does not exist";
+        }
 
         //visible var
         else if(syntaxCheck(lastN, ".v\n"))
@@ -178,10 +201,56 @@ bool Interpreter::syntaxCheck(int si, QString s)
     if(si+ss > lexemes->size())
         return false;
     for(int i=0;i<ss;i++){
-        if(s.at(i) != lexemes->at(si+i).type && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type)))
+        if(s.at(i) != lexemes->at(si+i).type
+                && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("+-*/%><").contains(lexemes->at(si+i).type))
+                )
             return false;
     }
     return true;
+}
+
+Interpreter::VariableData *Interpreter::processExpression(int start, int end)
+{
+    QStack<VariableData*> s;
+    for(int i=end;i>=start;i--){
+        char type=this->lexemes->at(i).type;
+        QString token=this->lexemes->at(i).token;
+        if(QString("f01\"").contains(type))
+            s.push(new VariableData(type, token));
+        else if(type == 'v'){
+            if(this->symbols->contains(token)){
+                VariableData *tmp = this->symbols->value(token);
+                s.push(new VariableData(tmp->type,tmp->value));
+            } else return NULL;
+        }
+        else if(QString("+-*/%><").contains(type)){
+            VariableData *arg2=s.pop();
+            VariableData *arg1=s.pop();
+            if(!QString("0f").contains(arg1->type))return NULL;
+            if(!QString("0f").contains(arg2->type))return NULL;
+            float v1 = arg1->value.toFloat();
+            float v2 = arg2->value.toFloat();
+            float result;
+            switch(type){
+            case '+': result = v1+v2; break;
+            case '-': result = v1-v2;  break;
+            case '*': result = v1*v2;  break;
+            case '/': result = v1/v2;  break;
+            case '%': result = (int)v1 % (int)v2;  break;
+            case '>': result = (v1>v2)?v1:v2; break;
+            case '<': result = (v1<v2)?v1:v2; break;
+            }
+            delete arg1;
+            delete arg2;
+            if(arg1->type == 'f' || arg2->type == 'f')
+                s.push(new VariableData('f',QString::number((float)result)));
+            else
+                s.push(new VariableData('0',QString::number((int)result)));
+        }
+    }
+    if(s.size()==1) return s.at(0);
+    return NULL;
 }
 
 void Interpreter::input(QString s)

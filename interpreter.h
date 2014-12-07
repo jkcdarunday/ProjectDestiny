@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QList>
 #include <QHash>
+#include <QStack>
 #include <QRegExp>
 #include <QDebug>
 #include <QTableWidget>
@@ -67,6 +68,7 @@ private:
     QList<LexemeRegex*> *regexes;
     QHash<QString,VariableData*> *symbols;
     bool syntaxCheck(int si,QString s);
+    VariableData *processExpression(int start, int end);
 };
 
 #endif // INTERPRETER_H
