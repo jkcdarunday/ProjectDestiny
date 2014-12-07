@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
-    <height>535</height>
+    <width>727</width>
+    <height>531</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,11 @@
 	border-radius:3px;
 	color: black;
 }
+
+.QHeaderView{
+	background-color:rgba(255,255,255,0.2);
+}
+
 
 .QTextEdit:focus{
 	background-color:rgba(255,255,255,0.6);
@@ -160,7 +165,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>731</width>
+     <width>727</width>
      <height>20</height>
     </rect>
    </property>
