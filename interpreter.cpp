@@ -242,12 +242,12 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
             case '>': result = (v1>v2)?v1:v2; break;
             case '<': result = (v1<v2)?v1:v2; break;
             }
-            delete arg1;
-            delete arg2;
             if(arg1->type == 'f' || arg2->type == 'f')
                 s.push(new VariableData('f',QString::number((double)result)));
             else
                 s.push(new VariableData('0',QString::number((int)result)));
+            delete arg1;
+            delete arg2;
         }
 
         else if(QString("&^|!").contains(type)){
