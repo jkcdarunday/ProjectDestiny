@@ -28,6 +28,7 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('^', "Boolean Operation", "WON\\s+OF\\s*"));
     regexes->append(new LexemeRegex('!', "Boolean Operation", "NOT\\s+OF\\s*"));
     regexes->append(new LexemeRegex('y', "Boolean Operation", "ANY\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('Y', "Boolean Operation", "ALL\\s+OF\\s*"));
 
     regexes->append(new LexemeRegex('s', "String Operation", "SMOOSH\\s*"));
 
@@ -203,7 +204,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
     for(int i=0;i<ss;i++){
         if(s.at(i) != lexemes->at(si+i).type
                 && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
-                && !(s.at(i) == 'o' && QString("+-*/%><&^|!").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("+-*/%><&^|!yY").contains(lexemes->at(si+i).type))
                 )
             return false;
     }
@@ -213,6 +214,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
 Interpreter::VariableData *Interpreter::processExpression(int start, int end)
 {
     QStack<VariableData*> s;
+    int mkays = 0;
     for(int i=end;i>=start;i--){
         char type=this->lexemes->at(i).type;
         QString token=this->lexemes->at(i).token;
@@ -267,6 +269,37 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
             case '!': res = !b1; break;
             }
             s.push(new VariableData('1', QString(res?"WIN":"FAIL")));
+        }
+
+        else if(type == ']'){
+            mkays++;
+            s.push(new VariableData(type,token));
+        }
+
+        else if(QString("yY").contains(type)){
+            if(mkays <= 0)
+                return NULL;
+            mkays--;
+            if(s.size() == 0) return NULL;
+            VariableData *arg1=s.pop();
+
+            bool hasResult=false;
+            bool resultIs=false;
+            while(arg1->type != ']'){
+                if(arg1->type!='1') return NULL;
+                bool b1 = QRegExp("WIN",Qt::CaseInsensitive).exactMatch(arg1->value);
+                if(!hasResult && ((type=='y' && b1==true) || (type == 'Y' && b1==false))){
+                    resultIs=b1;
+                    hasResult=true;
+                }
+                delete arg1;
+                arg1=s.pop();
+            }
+            if(!hasResult){
+                s.push(new VariableData('1',QString(type=='y'?"FAIL":"WIN")));
+            } else {
+                s.push(new VariableData('1',QString(resultIs?"WIN":"FAIL")));
+            }
 
         }
     }
