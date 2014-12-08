@@ -230,9 +230,9 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
             VariableData *arg1=s.pop();
             if(!QString("0f").contains(arg1->type))return NULL;
             if(!QString("0f").contains(arg2->type))return NULL;
-            float v1 = arg1->value.toFloat();
-            float v2 = arg2->value.toFloat();
-            float result;
+            double v1 = arg1->value.toDouble();
+            double v2 = arg2->value.toDouble();
+            double result;
             switch(type){
             case '+': result = v1+v2; break;
             case '-': result = v1-v2;  break;
@@ -245,7 +245,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
             delete arg1;
             delete arg2;
             if(arg1->type == 'f' || arg2->type == 'f')
-                s.push(new VariableData('f',QString::number((float)result)));
+                s.push(new VariableData('f',QString::number((double)result)));
             else
                 s.push(new VariableData('0',QString::number((int)result)));
         }
