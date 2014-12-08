@@ -32,7 +32,7 @@ public:
         QRegExp *regex;
         explicit LexemeRegex(char type, QString label, QString regex){
             this->type=type;
-            this->regex = new QRegExp(regex);
+            this->regex = new QRegExp(regex,Qt::CaseInsensitive);
             this->label=label;
         }
     };
