@@ -63,11 +63,11 @@ Interpreter::Interpreter(QObject *parent) :
 
     regexes->append(new LexemeRegex('Q', "Invalid Use of Keyword", "(SUM|DIFF|PRODUKT|QUOSHUNT|MOD|BIGGR|SMALLR|BOTH|EITHER|WON|NOT|ANY|I|NOW|I|HAS|A|DIFFRINT|BOTH|SAEM|AND|BIGGR|SMALLR|O|YA|RLY|MEBBE|NO|WAI|IM|OUTTA|YR)\\s*"));
 
-    regexes->append(new LexemeRegex('v', "Variable Name", varR + "\\s*"));
     regexes->append(new LexemeRegex('f', "Float Literal", floatR + "\\s*"));
     regexes->append(new LexemeRegex('0', "Integer Literal", numR +"\\s*"));
     regexes->append(new LexemeRegex('"', "String Literal", stringR + "\\s*"));
     regexes->append(new LexemeRegex('1', "Boolean Literal", booleanR + "\\s*"));
+    regexes->append(new LexemeRegex('v', "Variable Name", varR + "\\s*"));
 }
 
 void Interpreter::parse(QString s)
@@ -203,7 +203,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
     for(int i=0;i<ss;i++){
         if(s.at(i) != lexemes->at(si+i).type
                 && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
-                && !(s.at(i) == 'o' && QString("+-*/%><").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("+-*/%><&^|!").contains(lexemes->at(si+i).type))
                 )
             return false;
     }
@@ -224,6 +224,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
                 s.push(new VariableData(tmp->type,tmp->value));
             } else return NULL;
         }
+
         else if(QString("+-*/%><").contains(type)){
             VariableData *arg2=s.pop();
             VariableData *arg1=s.pop();
@@ -247,6 +248,26 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
                 s.push(new VariableData('f',QString::number((float)result)));
             else
                 s.push(new VariableData('0',QString::number((int)result)));
+        }
+
+        else if(QString("&^|!").contains(type)){
+            VariableData *arg2=NULL;
+            bool b2=false;
+            if(type!='!'){
+                arg2=s.pop();
+                b2 = QRegExp("WIN",Qt::CaseInsensitive).exactMatch(arg2->value);
+            }
+            VariableData *arg1=s.pop();
+            bool b1 = QRegExp("WIN",Qt::CaseInsensitive).exactMatch(arg1->value);
+            bool res;
+            switch(type){
+            case '&': res = b1 && b2; break;
+            case '^': res = b1 ^ b2; break;
+            case '|': res = b1 || b2; break;
+            case '!': res = !b1; break;
+            }
+            s.push(new VariableData('1', QString(res?"WIN":"FAIL")));
+
         }
     }
     if(s.size()==1) return s.at(0);
