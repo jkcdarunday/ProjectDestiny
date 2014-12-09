@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>727</width>
-    <height>531</height>
+    <width>723</width>
+    <height>527</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -160,41 +160,49 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>727</width>
+     <width>723</width>
      <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Fi&amp;le</string>
+     <string>File</string>
     </property>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
-    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuAnalyze">
+   <widget class="QMenu" name="menuMode">
     <property name="title">
-     <string>Edit</string>
+     <string>Mode</string>
     </property>
+    <addaction name="actionEdit"/>
     <addaction name="actionAnalyze"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionLOLi"/>
+    <addaction name="actionAuthors"/>
+   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuAnalyze"/>
+   <addaction name="menuMode"/>
+   <addaction name="menuAbout"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLoad">
    <property name="icon">
     <iconset resource="Icons.qrc">
      <normaloff>:/toolbar/document-open.svg</normaloff>:/toolbar/document-open.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Load</string>
+    <string>Load</string>
    </property>
   </action>
   <action name="actionSave">
@@ -203,17 +211,36 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/toolbar/document-save.svg</normaloff>:/toolbar/document-save.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save</string>
+    <string>Save</string>
    </property>
   </action>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/toolbar/quit.png</normaloff>:/toolbar/quit.png</iconset>
+   </property>
    <property name="text">
-    <string>&amp;Quit</string>
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionEdit">
+   <property name="text">
+    <string>Edit</string>
    </property>
   </action>
   <action name="actionAnalyze">
    <property name="text">
-    <string>&amp;Analyze</string>
+    <string>Analyze</string>
+   </property>
+  </action>
+  <action name="actionLOLi">
+   <property name="text">
+    <string>LOLi</string>
+   </property>
+  </action>
+  <action name="actionAuthors">
+   <property name="text">
+    <string>Authors</string>
    </property>
   </action>
  </widget>

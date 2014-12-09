@@ -2,8 +2,10 @@
     <qresource prefix="/toolbar">
         <file>document-open.svg</file>
         <file>document-save.svg</file>
+        <file>quit.png</file>
     </qresource>
     <qresource prefix="/images">
         <file>link.jpg</file>
+        <file>authors.jpg</file>
     </qresource>
 </RCC>

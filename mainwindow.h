@@ -19,6 +19,12 @@ public:
 private slots:
     void on_analyzeButton_clicked();
 
+    void on_actionQuit_triggered();
+
+    void on_actionAuthors_triggered();
+
+    void on_actionLoad_triggered();
+    
 private:
     Ui::MainWindow *ui;
     Interpreter *interpreter;

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "authors.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,3 +29,20 @@ void MainWindow::on_analyzeButton_clicked()
     this->interpreter->populateSymbolTable(ui->symbolTable);
 }
 
+
+void MainWindow::on_actionQuit_triggered()
+{
+    QApplication::quit();
+}
+
+void MainWindow::on_actionLoad_triggered()
+{
+    
+}
+
+void MainWindow::on_actionAuthors_triggered()
+{
+    Authors a;
+    a.setModal(true);
+    a.exec();
+}

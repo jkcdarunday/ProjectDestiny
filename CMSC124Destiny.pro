@@ -14,12 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    interpreter.cpp
+    interpreter.cpp \
+    authors.cpp
 
 HEADERS  += mainwindow.h \
-    interpreter.h
+    interpreter.h \
+    authors.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    authors.ui
 
 RESOURCES += \
     Icons.qrc
