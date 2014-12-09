@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->interpreter = new Interpreter(this);
-    connect(this->interpreter, SIGNAL(output(QString)), ui->outputBox, SLOT(append(QString )));
+    connect(this->interpreter, SIGNAL(output(QString)), ui->outputBox, SLOT(appendPlainText(QString)));
 }
 
 MainWindow::~MainWindow()

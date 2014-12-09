@@ -78,7 +78,9 @@ private:
     QStack<QHash<QString,VariableData*>*> *symbols;
     VariableData *findVariable(QString var);
     bool syntaxCheck(int si,QString s);
+    QString cleanString(QString s);
     VariableData *processExpression(int start, int end);
+    QRegExp *stringCleaner;
 };
 
 #endif // INTERPRETER_H

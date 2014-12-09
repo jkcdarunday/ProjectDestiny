@@ -8,6 +8,7 @@ Interpreter::Interpreter(QObject *parent) :
     inputBuffer = new QStack<QString>();
     symbols = new QStack<QHash<QString, VariableData*>*>();
     symbols->push(new QHash<QString,VariableData*>());
+    stringCleaner = new QRegExp("^\"(.*)\"$");
 
     QString typeR = "(NOOB|TROOF|NUMBAR|NUMBR|YARN)";
     QString booleanR = "(WIN|FAIL)";
@@ -381,8 +382,10 @@ void Interpreter::execute()
                     tmp2->type='0';
                 else if(QRegExp("-?[0-9]+\\.[0-9]+").exactMatch(finput))
                     tmp2->type='f';
-                else
+                else{
                     tmp2->type='\"';
+                    finput = "\"" + finput + "\"";
+                }
                 tmp2->value = finput;
             }
 
@@ -426,6 +429,14 @@ bool Interpreter::syntaxCheck(int si, QString s)
             return false;
     }
     return true;
+}
+
+QString Interpreter::cleanString(QString s)
+{
+    if(this->stringCleaner->indexIn(s)>=0){
+        return this->stringCleaner->cap(1);
+    }
+    return s;
 }
 
 Interpreter::VariableData *Interpreter::processExpression(int start, int end)
@@ -554,7 +565,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
                 count++;
                 VariableData *arg1=s.pop();
                 if(QString("01f\"").contains(arg1->type)){
-                    emit output(arg1->value);
+                    emit output(this->cleanString(arg1->value));
                 } else {
                     return NULL;
                 }
