@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>723</width>
-    <height>527</height>
+    <width>721</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,10 +18,14 @@
   </property>
   <widget class="QWidget" name="mainWidget">
    <property name="styleSheet">
-    <string notr="true">.QTableWidget,.QHeaderView,.QTextEdit,.QPushButton{	
+    <string notr="true">.QLineEdit,.QTableWidget,.QHeaderView,.QTextEdit,.QPushButton{	
 	background-color:rgba(255,255,255,0.5);
 	border-radius:3px;
 	color: black;
+}
+
+.QLineEdit::disabled{
+	background-color:rgba(155,155,155,0.5);
 }
 
 .QHeaderView{
@@ -29,7 +33,7 @@
 }
 
 
-.QTextEdit:focus{
+.QLineEdit:focus,.QTextEdit:focus{
 	background-color:rgba(255,255,255,0.6);
 }
 
@@ -104,6 +108,13 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLineEdit" name="inputLine">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -166,13 +177,13 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>723</width>
+     <width>721</width>
      <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
@@ -180,14 +191,14 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuMode">
     <property name="title">
-     <string>Mode</string>
+     <string>&amp;Mode</string>
     </property>
     <addaction name="actionEdit"/>
     <addaction name="actionAnalyze"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
-     <string>About</string>
+     <string>Abo&amp;ut</string>
     </property>
     <addaction name="actionLOLi"/>
     <addaction name="actionAuthors"/>
@@ -202,7 +213,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/toolbar/document-open.svg</normaloff>:/toolbar/document-open.svg</iconset>
    </property>
    <property name="text">
-    <string>Load</string>
+    <string>&amp;Load</string>
    </property>
   </action>
   <action name="actionSave">
@@ -211,7 +222,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/toolbar/document-save.svg</normaloff>:/toolbar/document-save.svg</iconset>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -220,27 +231,27 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/toolbar/quit.png</normaloff>:/toolbar/quit.png</iconset>
    </property>
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
   </action>
   <action name="actionEdit">
    <property name="text">
-    <string>Edit</string>
+    <string>&amp;Edit</string>
    </property>
   </action>
   <action name="actionAnalyze">
    <property name="text">
-    <string>Analyze</string>
+    <string>&amp;Analyze</string>
    </property>
   </action>
   <action name="actionLOLi">
    <property name="text">
-    <string>LOLi</string>
+    <string>&amp;LOLi</string>
    </property>
   </action>
   <action name="actionAuthors">
    <property name="text">
-    <string>Authors</string>
+    <string>&amp;Authors</string>
    </property>
   </action>
  </widget>

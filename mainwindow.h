@@ -24,9 +24,10 @@ private slots:
     void on_actionAuthors_triggered();
 
     void on_actionLoad_triggered();
-    
-    void on_actionLOLi_triggered();
 
+    void on_inputLine_returnPressed();
+
+    void needInput();
 private:
     Ui::MainWindow *ui;
     Interpreter *interpreter;

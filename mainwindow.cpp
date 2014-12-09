@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "authors.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -43,13 +42,16 @@ void MainWindow::on_actionLoad_triggered()
 
 void MainWindow::on_actionAuthors_triggered()
 {
-    Authors a;
-    a.setModal(true);
-    a.exec();
 }
 
-void MainWindow::on_actionLOLi_triggered()
+void MainWindow::on_inputLine_returnPressed()
 {
-    QMessageBox m;
-    m.about(this, "About LOLi", "LOLi, short for LOLCODE interpreter.");
+    this->interpreter->input(ui->inputLine->text().trimmed());
+    ui->inputLine->setEnabled(false);
+}
+
+void MainWindow::needInput()
+{
+    ui->inputLine->setEnabled(true);
+    ui->inputLine->setFocus();
 }
