@@ -70,6 +70,8 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('"', "String Literal", stringR + "\\s*"));
     regexes->append(new LexemeRegex('1', "Boolean Literal", booleanR + "\\s*"));
     regexes->append(new LexemeRegex('v', "Variable Name", varR + "\\s*"));
+
+    regexes->append(new LexemeRegex('\n', "Line Delimiter", ",\\s+"));
 }
 
 void Interpreter::parse(QString s)
