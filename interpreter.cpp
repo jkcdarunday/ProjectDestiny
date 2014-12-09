@@ -279,7 +279,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
     for(int i=0;i<ss;i++){
         if(s.at(i) != lexemes->at(si+i).type
                 && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
-                && !(s.at(i) == 'o' && QString("\"01f+-*/%><&^|!yY=z.").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("\"01f+-*/%><&^|!yY=z.v").contains(lexemes->at(si+i).type))
                 )
             return false;
     }
