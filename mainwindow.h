@@ -25,6 +25,8 @@ private slots:
 
     void on_actionLoad_triggered();
     
+    void on_actionLOLi_triggered();
+
 private:
     Ui::MainWindow *ui;
     Interpreter *interpreter;
