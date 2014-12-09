@@ -125,6 +125,7 @@ void Interpreter::populateSymbolTable(QTableWidget *w)
 void Interpreter::execute()
 {
     int lastN = 0;
+    if(this->lexemes->isEmpty()) return;
     do{
         //i has a var
         if(syntaxCheck(lastN,"iv\n"))
@@ -190,7 +191,7 @@ void Interpreter::execute()
 
         //go to the next newline
         do lastN++; while(lastN!=lexemes->size()-1 && this->lexemes->at(lastN-1).type != '\n');
-    }while(lastN!=lexemes->size()-1);
+    }while(lastN<=lexemes->size()-1);
 }
 
 void Interpreter::reset()
