@@ -5,7 +5,8 @@ Interpreter::Interpreter(QObject *parent) :
 {
     lexemes = new QList<Lexeme>();
     regexes = new QList<LexemeRegex*>();
-    symbols = new QHash<QString, VariableData*>();
+    symbols = new QStack<QHash<QString, VariableData*>*>();
+    symbols->push(new QHash<QString,VariableData*>());
 
     QString typeR = "(NOOB|TROOF|NUMBAR|NUMBR|YARN)";
     QString booleanR = "(WIN|FAIL)";
@@ -114,11 +115,11 @@ void Interpreter::populateLexemeTable(QTableWidget *w)
 
 void Interpreter::populateSymbolTable(QTableWidget *w)
 {
-    int size = this->symbols->size();
+    int size = this->symbols->top()->size();
     w->setRowCount(size);
     int count=0;
-    QHash<QString, Interpreter::VariableData*>::iterator i = this->symbols->begin();
-    while (i != this->symbols->end()) {
+    QHash<QString, Interpreter::VariableData*>::iterator i = this->symbols->top()->begin();
+    while (i != this->symbols->top()->end()) {
         w->setItem(count,0,new QTableWidgetItem(QString(i.value()->type)));
         w->setItem(count,1,new QTableWidgetItem(i.key()));
         w->setItem(count,2,new QTableWidgetItem(i.value()->value));
@@ -131,14 +132,16 @@ void Interpreter::execute()
 {
     int lastN = 0;
     if(this->lexemes->isEmpty()) return;
-    symbols->insert("IT", new VariableData('x',QString("")));
+
+
+    this->symbols->top()->insert("IT", new VariableData('x',QString("")));
     int lineNumber = 0;
     do{
         lineNumber++;
         //i has a var
         if(syntaxCheck(lastN,"iv\n"))
-            if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('x',""));
+            if(!findVariable(lexemes->at(lastN+1).token))
+                this->symbols->top()->insert(lexemes->at(lastN+1).token, new VariableData('x',""));
             else qDebug() << "Syntax Error : Declaring already-existing variable :(";
 
         //i has a var itz expression
@@ -148,8 +151,8 @@ void Interpreter::execute()
             VariableData *tmp = this->processExpression(lastN+3,nn);
             if(tmp==NULL)
                 qDebug() << "Syntax Error : Problem executing expression";
-            else if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, tmp);
+            else if(!findVariable(lexemes->at(lastN+1).token))
+                this->symbols->top()->insert(lexemes->at(lastN+1).token, tmp);
         }
 
         //var r expression
@@ -159,8 +162,8 @@ void Interpreter::execute()
             VariableData *tmp = this->processExpression(lastN+2,nn);
             if(tmp==NULL)
                 qDebug() << "Syntax Error : Problem executing expression";
-            else if(this->symbols->contains(lexemes->at(lastN).token))
-                this->symbols->insert(lexemes->at(lastN).token, tmp);
+            else if(VariableData *tmp2 = findVariable(lexemes->at(lastN).token))
+                tmp2->copy(tmp);
             else
                 qDebug() << "Syntax Error : Variable " + this->lexemes->at(lastN).token + " does not exist";
         }
@@ -172,8 +175,8 @@ void Interpreter::execute()
             VariableData *tmp = this->processExpression(lastN,nn);
             if(tmp==NULL)
                 qDebug() << "Syntax Error : Problem executing expression";
-            else if(this->symbols->contains("IT"))
-                this->symbols->insert(lexemes->at(lastN).token, tmp);
+            else if(VariableData *tmp2 = symbols->at(0)->value("IT"))
+                tmp2->copy(tmp);
             else
                 qDebug() << "Syntax Error : Variable IT does not exist";
         }
@@ -192,7 +195,16 @@ void Interpreter::execute()
 void Interpreter::reset()
 {
     this->lexemes->clear();
-    this->symbols->clear();
+    this->symbols->top()->clear();
+}
+
+Interpreter::VariableData *Interpreter::findVariable(QString var)
+{
+    for(int i=this->symbols->size()-1;i>=0;i--){
+        if(this->symbols->at(i)->contains(var))
+            return this->symbols->at(i)->value(var);
+    }
+    return NULL;
 }
 
 bool Interpreter::syntaxCheck(int si, QString s)
@@ -220,8 +232,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
         if(QString("f01\"").contains(type))
             s.push(new VariableData(type, token));
         else if(type == 'v'){
-            if(this->symbols->contains(token)){
-                VariableData *tmp = this->symbols->value(token);
+            if(VariableData* tmp = findVariable(token)){
                 s.push(new VariableData(tmp->type,tmp->value));
             } else return NULL;
         }

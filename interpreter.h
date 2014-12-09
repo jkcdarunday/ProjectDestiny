@@ -45,6 +45,11 @@ public:
             this->type=type;
             this->value=value;
         }
+
+        void copy(VariableData* src){
+            this->value = src->value;
+            this->type = src->type;
+        }
     };
 
 public:
@@ -66,7 +71,8 @@ public slots:
 private:
     QList<Lexeme> *lexemes;
     QList<LexemeRegex*> *regexes;
-    QHash<QString,VariableData*> *symbols;
+    QStack<QHash<QString,VariableData*>*> *symbols;
+    VariableData *findVariable(QString var);
     bool syntaxCheck(int si,QString s);
     VariableData *processExpression(int start, int end);
 };
