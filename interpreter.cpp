@@ -186,6 +186,7 @@ void Interpreter::execute()
                 qDebug() << "Syntax Error : Variable IT does not exist";
         }
 
+        //o rly?
         else if(syntaxCheck(lastN, "?\n")){
             VariableData *it = this->symbols->at(0)->value("IT");
             this->symbols->push(new QHash<QString,VariableData*>());
@@ -196,6 +197,7 @@ void Interpreter::execute()
 
         }
 
+        //ya rly
         else if(syntaxCheck(lastN, "g\n")){
             bool cond = false;
             if(this->symbols->top()->contains("_RES"))
@@ -217,6 +219,63 @@ void Interpreter::execute()
             }
         }
 
+        //mebbe expression
+        else if(syntaxCheck(lastN, "Go")){
+            bool cond1=false;
+            if(this->symbols->top()->contains("_RES"))
+                cond1 = QString("WIN").compare(this->symbols->top()->value("_RES")->value,Qt::CaseInsensitive)==0;
+            int nn=lastN+1;
+            while(nn+1<lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n')nn++;
+            VariableData *tmp = this->processExpression(lastN+1,nn);
+            if(tmp==NULL)
+                qDebug() << "Syntax Error : Problem executing expression";
+            else if(tmp->type != '1'){
+                qDebug() << "Boolean required in if condition";
+            } else {
+                bool cond = QString("WIN").compare(tmp->value,Qt::CaseInsensitive)==0;
+                if(cond1){
+                    QString toFind = "k";
+                    int nextN=lastN+2;
+                    int level = this->symbols->size()-1;
+                    int thisLevel = level;
+                    if(nextN<this->lexemes->size()){
+                        do{
+                            if(toFind.contains(this->lexemes->at(nextN).type)
+                                    && level == thisLevel){
+                                lastN=nextN-1;
+                                break;
+                            }
+                            else if(this->lexemes->at(nextN).type=='?') level++;
+                            else if(this->lexemes->at(nextN).type=='k') level--;
+                            do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
+                        }while(lastN<=lexemes->size()-1);
+                    }
+                }
+                else {
+                    this->symbols->top()->value("_RES")->value = QString(cond?"WIN":"FAIL");
+                    if(!cond){
+                        QString toFind = "Gwk";
+                        int nextN=lastN+2;
+                        int level = this->symbols->size()-1;
+                        int thisLevel = level;
+                        if(nextN<this->lexemes->size()){
+                            do{
+                                if(toFind.contains(this->lexemes->at(nextN).type)
+                                        && level == thisLevel){
+                                    lastN=nextN-1;
+                                    break;
+                                }
+                                else if(this->lexemes->at(nextN).type=='?') level++;
+                                else if(this->lexemes->at(nextN).type=='k') level--;
+                                do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
+                            }while(lastN<=lexemes->size()-1);
+                        }
+                    }
+                }
+            }
+        }
+
+        //no wai
         else if(syntaxCheck(lastN, "w\n")){
             bool cond = false;
             if(this->symbols->top()->contains("_RES"))
@@ -238,6 +297,7 @@ void Interpreter::execute()
             }
         }
 
+        //oic
         else if(syntaxCheck(lastN, "k\n")){
             if(this->symbols->size()>1)
                 this->symbols->pop();
