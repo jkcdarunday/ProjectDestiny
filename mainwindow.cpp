@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->inputLine->setEnabled(false);
     this->interpreter = new Interpreter(this);
     connect(this->interpreter, SIGNAL(output(QString)), ui->outputBox, SLOT(appendPlainText(QString)));
+    connect(this->interpreter, SIGNAL(askInput()), this, SLOT(needInput()));
 }
 
 MainWindow::~MainWindow()
@@ -70,10 +71,12 @@ void MainWindow::on_inputLine_returnPressed()
     this->interpreter->input(ui->inputLine->text().trimmed());
     ui->inputLine->setEnabled(false);
     ui->inputLine->clear();
+    ui->analyzeButton->setEnabled(true);
 }
 
 void MainWindow::needInput()
 {
+    ui->analyzeButton->setEnabled(false);
     ui->inputLine->setEnabled(true);
     ui->inputLine->setFocus();
 }
