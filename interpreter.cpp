@@ -54,7 +54,12 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('=', "Comparator", "BOTH\\s+SAEM\\s+"));
     regexes->append(new LexemeRegex('z', "Comparator", "DIFFRINT\\s+"));
 
-    regexes->append(new LexemeRegex('?', "If/Then Delimiter", "O\\s+RLY\\?\\s+|YA\\s+RLY\\s+|MEBBE\\s+|NO\\s+WAI\\s+|OIC\\s+"));
+    regexes->append(new LexemeRegex('?', "If/Then Delimiter", "O\\s+RLY\\?\\s+"));
+    regexes->append(new LexemeRegex('g', "If/Then Delimiter", "YA\\s+RLY\\s+"));
+    regexes->append(new LexemeRegex('G', "If/Then Delimiter", "MEBBE\\s+"));
+    regexes->append(new LexemeRegex('w', "If/Then Delimiter", "NO\\s+WAI\\s+"));
+    regexes->append(new LexemeRegex('k', "If/Then Delimiter", "OIC\\s+"));
+
     regexes->append(new LexemeRegex('[', "Case Delimiter", "WTF\\?\\s+|OMG\\s+|GTFO\\s+"));
 
     regexes->append(new LexemeRegex('{', "Begin Loop Delimeter", "IM\\s+IN\\s+YR\\s+"));
