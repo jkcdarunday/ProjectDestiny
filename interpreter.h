@@ -8,6 +8,7 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QTableWidget>
+#include <QEventLoop>
 
 class Interpreter : public QObject
 {
@@ -70,8 +71,10 @@ public slots:
     void reset();
 
 private:
+    QEventLoop scanner;
     QList<Lexeme> *lexemes;
     QList<LexemeRegex*> *regexes;
+    QStack<QString> *inputBuffer;
     QStack<QHash<QString,VariableData*>*> *symbols;
     VariableData *findVariable(QString var);
     bool syntaxCheck(int si,QString s);

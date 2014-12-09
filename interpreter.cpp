@@ -5,6 +5,7 @@ Interpreter::Interpreter(QObject *parent) :
 {
     lexemes = new QList<Lexeme>();
     regexes = new QList<LexemeRegex*>();
+    inputBuffer = new QStack<QString*>();
     symbols = new QStack<QHash<QString, VariableData*>*>();
     symbols->push(new QHash<QString,VariableData*>());
 
@@ -60,7 +61,10 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('w', "If/Then Delimiter", "NO\\s+WAI\\s+"));
     regexes->append(new LexemeRegex('k', "If/Then Delimiter", "OIC\\s+"));
 
-    regexes->append(new LexemeRegex('[', "Case Delimiter", "WTF\\?\\s+|OMG\\s+|GTFO\\s+"));
+    regexes->append(new LexemeRegex('3', "Case Delimiter", "WTF\\?\\s+"));
+    regexes->append(new LexemeRegex('4', "Case Delimiter", "OMG\\s+"));
+    regexes->append(new LexemeRegex('5', "Case Delimiter", "GTFO\\s+"));
+    regexes->append(new LexemeRegex('6', "Case Delimiter", "OMGWTF\\s+"));
 
     regexes->append(new LexemeRegex('{', "Begin Loop Delimeter", "IM\\s+IN\\s+YR\\s+"));
 //    regexes->append(new LexemeRegex('!', "Loop Function", "(UPPIN|NERFIN)\\s+YR\\s+"));
@@ -148,7 +152,6 @@ void Interpreter::execute()
             if(!findVariable(lexemes->at(lastN+1).token))
                 this->symbols->top()->insert(lexemes->at(lastN+1).token, new VariableData('x',""));
             else qDebug() << "Syntax Error : Declaring already-existing variable :(";
-
         //i has a var itz expression
         else if(syntaxCheck(lastN,"iv#o")){
             int nn=lastN;
@@ -159,7 +162,6 @@ void Interpreter::execute()
             else if(!findVariable(lexemes->at(lastN+1).token))
                 this->symbols->top()->insert(lexemes->at(lastN+1).token, tmp);
         }
-
         //var r expression
         else if(syntaxCheck(lastN,"v:o")){
             int nn=lastN;
@@ -172,7 +174,6 @@ void Interpreter::execute()
             else
                 qDebug() << "Syntax Error : Variable " + this->lexemes->at(lastN).token + " does not exist";
         }
-
         //expression
         else if(syntaxCheck(lastN, "o")){
             int nn=lastN;
@@ -185,7 +186,6 @@ void Interpreter::execute()
             else
                 qDebug() << "Syntax Error : Variable IT does not exist";
         }
-
         //o rly?
         else if(syntaxCheck(lastN, "?\n")){
             VariableData *it = this->symbols->at(0)->value("IT");
@@ -196,7 +196,6 @@ void Interpreter::execute()
                 this->symbols->top()->insert("_RES", new VariableData('1', "FAIL"));
 
         }
-
         //ya rly
         else if(syntaxCheck(lastN, "g\n")){
             bool cond = false;
@@ -213,12 +212,12 @@ void Interpreter::execute()
                         break;
                     }
                     else if(this->lexemes->at(nextN).type=='?') level++;
+                    else if(this->lexemes->at(nextN).type=='3') level++;
                     else if(this->lexemes->at(nextN).type=='k') level--;
                     do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
                 }while(lastN<=lexemes->size()-1);
             }
         }
-
         //mebbe expression
         else if(syntaxCheck(lastN, "Go")){
             bool cond1=false;
@@ -246,6 +245,7 @@ void Interpreter::execute()
                                 break;
                             }
                             else if(this->lexemes->at(nextN).type=='?') level++;
+                            else if(this->lexemes->at(nextN).type=='3') level++;
                             else if(this->lexemes->at(nextN).type=='k') level--;
                             do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
                         }while(lastN<=lexemes->size()-1);
@@ -266,6 +266,7 @@ void Interpreter::execute()
                                     break;
                                 }
                                 else if(this->lexemes->at(nextN).type=='?') level++;
+                                else if(this->lexemes->at(nextN).type=='3') level++;
                                 else if(this->lexemes->at(nextN).type=='k') level--;
                                 do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
                             }while(lastN<=lexemes->size()-1);
@@ -274,7 +275,6 @@ void Interpreter::execute()
                 }
             }
         }
-
         //no wai
         else if(syntaxCheck(lastN, "w\n")){
             bool cond = false;
@@ -291,12 +291,12 @@ void Interpreter::execute()
                         break;
                     }
                     else if(this->lexemes->at(nextN).type=='?') level++;
+                    else if(this->lexemes->at(nextN).type=='3') level++;
                     else if(this->lexemes->at(nextN).type=='k') level--;
                     do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
                 }while(lastN<=lexemes->size()-1);
             }
         }
-
         //oic
         else if(syntaxCheck(lastN, "k\n")){
             if(this->symbols->size()>1)
@@ -304,7 +304,89 @@ void Interpreter::execute()
             else
                 qDebug() << "Syntax Error: Closing a scope that has not been opened.";
         }
+        //wtf?
+        else if(syntaxCheck(lastN, "3\n")){
+            VariableData *it = this->symbols->at(0)->value("IT");
+            this->symbols->push(new QHash<QString,VariableData*>());
+            this->symbols->top()->insert("_RES", new VariableData(it->type,it->value));
+        }
+        //omg literal
+        else if(syntaxCheck(lastN, "4t\n")){
+            bool res = false;
+            char t1=this->symbols->top()->value("_RES")->type, t2=this->lexemes->at(lastN+1).type;
+            if(t1=='\"' && t2=='\"'){
+                res = this->symbols->top()->value("_RES")->value.trimmed().compare(this->lexemes->at(lastN+1).token.trimmed())==0;
+            } else if(t1=='1' && t2=='1'){
+                res = this->symbols->top()->value("_RES")->value.trimmed().compare(this->lexemes->at(lastN+1).token.trimmed())==0;
+            } else if(QString("0f").contains(t1) && QString("0f").contains(t2)){
+                res = this->symbols->top()->value("_RES")->value.trimmed().toDouble() == this->lexemes->at(lastN+1).token.trimmed().toDouble();
+            }
+            qDebug() << res;
+            if(!res && !this->symbols->top()->contains("_CASC")){
+                int nextN=lastN+2;
+                int level = this->symbols->size()-1;
+                int thisLevel = level;
+                if(nextN<this->lexemes->size()){
+                    do{
+                        if(QString("k46").contains(this->lexemes->at(nextN).type)
+                                && level == thisLevel){
+                            lastN=nextN-1;
+                            break;
+                        }
+                        else if(this->lexemes->at(nextN).type=='?') level++;
+                        else if(this->lexemes->at(nextN).type=='3') level++;
+                        else if(this->lexemes->at(nextN).type=='k') level--;
+                        do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
+                    }while(lastN<=lexemes->size()-1);
+                }
+            }else{
+                this->symbols->top()->insert("_CASC", new VariableData('1', "WIN"));
+            }
+        }
+        //gtfo
+        else if(syntaxCheck(lastN, "5\n")){
+            int nextN=lastN+2;
+            int level = this->symbols->size()-1;
+            int thisLevel = level;
+            if(nextN<this->lexemes->size()){
+                do{
+                    if(QString("k").contains(this->lexemes->at(nextN).type)
+                            && level == thisLevel){
+                        lastN=nextN-1;
+                        break;
+                    }
+                    else if(this->lexemes->at(nextN).type=='?') level++;
+                    else if(this->lexemes->at(nextN).type=='3') level++;
+                    else if(this->lexemes->at(nextN).type=='k') level--;
+                    do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
+                }while(lastN<=lexemes->size()-1);
+            }
+        }
+        //omgwtf
+        else if(syntaxCheck(lastN, "6\n")){
+            //do nothing
+        }
+        //gimmeh
+        else if(syntaxCheck(lastN, ",v\n")){
+            VariableData *tmp2;
+            if(!(tmp2 = findVariable(lexemes->at(lastN+1).token)))
+                qDebug() << "Cannot store input in non-existant variable";
+            else {
+                emit askInput();
+                this->scanner.exec();
+                QString finput = this->inputBuffer->pop();
+                if(QRegExp("WIN|FAIL").exactMatch(finput))
+                    tmp2->type='1';
+                else if(QRegExp("-?[0-9]+").exactMatch(finput))
+                    tmp2->type='0';
+                else if(QRegExp("-?[0-9]+\\.[0-9]+").exactMatch(finput))
+                    tmp2->type='f';
+                else
+                    tmp2->type='\"';
+                tmp2->value = finput;
+            }
 
+        }
         //blank space
         else if(syntaxCheck(lastN,"\n"));
 
@@ -490,5 +572,6 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
 
 void Interpreter::input(QString s)
 {
-
+    this->inputBuffer->push(s);
+    this->scanner.quit();
 }
