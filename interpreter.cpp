@@ -182,6 +182,9 @@ void Interpreter::execute()
         else if(syntaxCheck(lastN, ".t\n"))
             emit output(this->lexemes->at(lastN+1).token);
 
+        //blank space
+        else if(syntaxCheck(lastN,"\n"));
+
         else
             qDebug() << "Syntax Error near : " << this->lexemes->at(lastN).token;
 
