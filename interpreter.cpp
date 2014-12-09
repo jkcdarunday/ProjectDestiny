@@ -44,7 +44,7 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('c', "Comment", "BTW.*"));
 
     regexes->append(new LexemeRegex('$', "Typecast Operator", "MAEK\\s+"));
-    regexes->append(new LexemeRegex('4', "Typecast Operator", "IS\\s+NOW\\s+A\\s+"));
+    regexes->append(new LexemeRegex('8', "Typecast Operator", "IS\\s+NOW\\s+A\\s+"));
 
     regexes->append(new LexemeRegex('.', "Output", "VISIBLE\\s+"));
     regexes->append(new LexemeRegex(',', "Input", "GIMMEH\\s+"));
@@ -72,7 +72,7 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex('@', "Loop Condition", "(TIL|WILE)\\s+"));
     regexes->append(new LexemeRegex('}', "End Loop Delimiter", "IM\\s+OUTTA\\s+YR\\s+"));
 
-    regexes->append(new LexemeRegex('t', "Data Type", "" + typeR + "\\s+"));
+    regexes->append(new LexemeRegex('p', "Data Type", "" + typeR + "\\s+"));
 
     regexes->append(new LexemeRegex('Q', "Invalid Use of Keyword", "(SUM|DIFF|PRODUKT|QUOSHUNT|MOD|BIGGR|SMALLR|"\
                                                                    "BOTH|EITHER|WON|NOT|ANY|I|NOW|I|HAS|A|DIFFRINT|"\
@@ -174,18 +174,6 @@ void Interpreter::execute()
                 tmp2->copy(tmp);
             else
                 qDebug() << "Syntax Error : Variable " + this->lexemes->at(lastN).token + " does not exist";
-        }
-        //expression
-        else if(syntaxCheck(lastN, "o")){
-            int nn=lastN;
-            while(nn+1<lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n')nn++;
-            VariableData *tmp = this->processExpression(lastN,nn);
-            if(tmp==NULL)
-                qDebug() << "Syntax Error : Problem executing expression";
-            else if(VariableData *tmp2 = symbols->at(0)->value("IT"))
-                tmp2->copy(tmp);
-            else
-                qDebug() << "Syntax Error : Variable IT does not exist";
         }
         //o rly?
         else if(syntaxCheck(lastN, "?\n")){
@@ -390,6 +378,51 @@ void Interpreter::execute()
             }
 
         }
+        //var is now a type
+        else if(syntaxCheck(lastN, "v8p\n")){
+            VariableData *tmp2;
+            if((tmp2 = findVariable(lexemes->at(lastN).token))){
+                if(this->lexemes->at(lastN+2).token.compare("YARN",Qt::CaseInsensitive)==0){
+                    tmp2->type='\"';
+                    tmp2->value = "\"" + tmp2->value + "\"";
+                }else if(this->lexemes->at(lastN+2).token.compare("NUMBR",Qt::CaseInsensitive)==0){
+                    QString meh;
+                    if(tmp2->type=='\"') meh = cleanString(tmp2->value);
+                    else meh = tmp2->value;
+                    if(QRegExp("-?[0-9]+(\\.[0-9]+)?").exactMatch(meh)){
+                        tmp2->type = '0';
+                        tmp2->value = QString::number((int)(meh.toFloat()));
+                    }
+                }
+                else if(this->lexemes->at(lastN+2).token.compare("NUMBAR",Qt::CaseInsensitive)==0){
+                    QString meh;
+                    if(tmp2->type=='\"') meh = cleanString(tmp2->value);
+                    else meh = tmp2->value;
+                    if(QRegExp("-?[0-9]+(\\.[0-9]+)?").exactMatch(meh)){
+                        tmp2->type = 'f';
+                        tmp2->value = QString::number((meh.toFloat()));
+                    }
+                }
+                else if(this->lexemes->at(lastN+2).token.compare("NOOB",Qt::CaseInsensitive)==0){
+                    tmp2->type='x';
+                    tmp2->value="";
+                }
+            } else {
+                qDebug() << "Typecasting a non-existant variable";
+            }
+        }
+        //expression
+        else if(syntaxCheck(lastN, "o")){
+            int nn=lastN;
+            while(nn+1<lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n')nn++;
+            VariableData *tmp = this->processExpression(lastN,nn);
+            if(tmp==NULL)
+                qDebug() << "Syntax Error : Problem executing expression";
+            else if(VariableData *tmp2 = symbols->at(0)->value("IT"))
+                tmp2->copy(tmp);
+            else
+                qDebug() << "Syntax Error : Variable IT does not exist";
+        }
         //blank space
         else if(syntaxCheck(lastN,"\n"));
 
@@ -424,7 +457,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
     for(int i=0;i<ss;i++){
         if(s.at(i) != lexemes->at(si+i).type
                 && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
-                && !(s.at(i) == 'o' && QString("\"01f+-*/%><&^|!yY=z.v").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("p\"01f+-*/%><&^|!yY=z.v").contains(lexemes->at(si+i).type))
                 )
             return false;
     }
@@ -446,7 +479,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
     for(int i=end;i>=start;i--){
         char type=this->lexemes->at(i).type;
         QString token=this->lexemes->at(i).token;
-        if(QString("f01\"").contains(type))
+        if(QString("f01\"p").contains(type))
             s.push(new VariableData(type, token));
         else if(type == 'v'){
             if(VariableData* tmp = findVariable(token)){
@@ -571,6 +604,35 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
                 }
             }
             s.push(new VariableData('0',QString::number(count)));
+        }
+
+        else if(type == '$'){
+            if(s.size()<2) return NULL;
+            VariableData *arg2=s.pop();
+            VariableData *arg1=s.pop();
+            if(arg2->type=='p'){
+                if(arg2->value.compare("YARN",Qt::CaseInsensitive)==0)
+                    s.push(new VariableData('\"',"\"" + arg1->value + "\""));
+                else if(arg2->value.compare("NUMBR",Qt::CaseInsensitive)==0){
+                    QString meh;
+                    if(arg1->type=='\"') meh = cleanString(arg1->value);
+                    else meh = arg1->value;
+                    if(QRegExp("-?[0-9]+(\\.[0-9]+)?").exactMatch(meh)){
+                        s.push(new VariableData('0', QString::number((int)(meh.toFloat()))));
+                    }
+                }
+                else if(arg2->value.compare("NUMBAR",Qt::CaseInsensitive)==0){
+                    QString meh;
+                    if(arg1->type=='\"') meh = cleanString(arg1->value);
+                    else meh = arg1->value;
+                    if(QRegExp("-?[0-9]+(\\.[0-9]+)?").exactMatch(meh)){
+                        s.push(new VariableData('f', QString::number(meh.toFloat())));
+                    }
+                }
+                else if(arg2->value.compare("NOOB",Qt::CaseInsensitive)==0){
+                    s.push(new VariableData('x',""));
+                }
+            }
         }
 
         else if(type=='n');

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
-    <height>525</height>
+    <width>719</width>
+    <height>523</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
   </property>
   <widget class="QWidget" name="mainWidget">
    <property name="styleSheet">
-    <string notr="true">.QLineEdit,.QTableWidget,.QHeaderView,.QTextEdit,.QPushButton{	
+    <string notr="true">.QPlainTextEdit,.QLineEdit,.QTableWidget,.QHeaderView,.QTextEdit,.QPushButton{	
 	background-color:rgba(255,255,255,0.5);
 	border-radius:3px;
 	color: black;
@@ -76,10 +76,10 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Monospace'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;I HAS A loli ITZ &amp;quot;kawaii&amp;quot;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;VISIBLE loli&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;loli R &amp;quot;not kawaii&amp;quot;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;VISIBLE loli&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;I HAS A var ITZ SUM OF 1 AN 1&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;VISIBLE var&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GIMMEH var&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;VISIBLE var&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -103,12 +103,15 @@ p, li { white-space: pre-wrap; }
            <family>Monospace</family>
           </font>
          </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QLineEdit" name="inputLine">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -174,7 +177,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>721</width>
+     <width>719</width>
      <height>20</height>
     </rect>
    </property>
@@ -190,15 +193,14 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>&amp;Mode</string>
     </property>
-    <addaction name="actionEdit"/>
     <addaction name="actionAnalyze"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>Abo&amp;ut</string>
     </property>
-    <addaction name="actionLOLi"/>
     <addaction name="actionAuthors"/>
+    <addaction name="actionAbout_LOLi"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuMode"/>
@@ -241,14 +243,14 @@ p, li { white-space: pre-wrap; }
     <string>&amp;Analyze</string>
    </property>
   </action>
-  <action name="actionLOLi">
-   <property name="text">
-    <string>&amp;LOLi</string>
-   </property>
-  </action>
   <action name="actionAuthors">
    <property name="text">
     <string>&amp;Authors</string>
+   </property>
+  </action>
+  <action name="actionAbout_LOLi">
+   <property name="text">
+    <string>About &amp;LOLi</string>
    </property>
   </action>
  </widget>

@@ -28,6 +28,12 @@ private slots:
     void on_inputLine_returnPressed();
 
     void needInput();
+    void on_actionSave_triggered();
+
+    void on_actionAnalyze_triggered();
+
+    void on_actionAbout_LOLi_triggered();
+
 private:
     Ui::MainWindow *ui;
     Interpreter *interpreter;
