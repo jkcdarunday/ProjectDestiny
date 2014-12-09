@@ -63,7 +63,9 @@ Interpreter::Interpreter(QObject *parent) :
 
     regexes->append(new LexemeRegex('t', "Data Type", "" + typeR + "\\s+"));
 
-    regexes->append(new LexemeRegex('Q', "Invalid Use of Keyword", "(SUM|DIFF|PRODUKT|QUOSHUNT|MOD|BIGGR|SMALLR|BOTH|EITHER|WON|NOT|ANY|I|NOW|I|HAS|A|DIFFRINT|BOTH|SAEM|AND|BIGGR|SMALLR|O|YA|RLY|MEBBE|NO|WAI|IM|OUTTA|YR)\\s+"));
+    regexes->append(new LexemeRegex('Q', "Invalid Use of Keyword", "(SUM|DIFF|PRODUKT|QUOSHUNT|MOD|BIGGR|SMALLR|"\
+                                                                   "BOTH|EITHER|WON|NOT|ANY|I|NOW|I|HAS|A|DIFFRINT|"\
+                                                                   "BOTH|SAEM|AND|BIGGR|SMALLR|O|YA|RLY|MEBBE|NO|WAI|IM|OUTTA|YR)\\s+"));
 
     regexes->append(new LexemeRegex('f', "Float Literal", floatR + "\\s*"));
     regexes->append(new LexemeRegex('0', "Integer Literal", numR +"\\s*"));
