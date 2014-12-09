@@ -57,6 +57,7 @@ public:
 
 signals:
     void output(QString s);
+    void error(QString m);
     void askInput();
 
 public slots:
