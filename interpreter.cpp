@@ -15,55 +15,55 @@ Interpreter::Interpreter(QObject *parent) :
     QString stringR = "\"([^\":]|:\"|::|:\\)|:>|:o|:\\([A-F0-9a-f]+\\)|:\\{[a-zA-Z][a-zA-Z0-9_]*\\}|:\\[[a-zA-Z]+\\])*\"";
     //qDebug() << stringR;
 
-    regexes->append(new LexemeRegex('+',"Arithmetic Operation", "SUM\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('-',"Arithmetic Operation", "DIFF\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('*',"Arithmetic Operation", "PRODUKT\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('/',"Arithmetic Operation", "QUOSHUNT\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('%',"Arithmetic Operation", "MOD\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('>',"Arithmetic Operation", "BIGGR\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('<',"Arithmetic Operation", "SMALLR\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('+',"Arithmetic Operation", "SUM\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('-',"Arithmetic Operation", "DIFF\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('*',"Arithmetic Operation", "PRODUKT\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('/',"Arithmetic Operation", "QUOSHUNT\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('%',"Arithmetic Operation", "MOD\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('>',"Arithmetic Operation", "BIGGR\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('<',"Arithmetic Operation", "SMALLR\\s+OF\\s+"));
 
-    regexes->append(new LexemeRegex('&', "Boolean Operation", "BOTH\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('|', "Boolean Operation", "EITHER\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('^', "Boolean Operation", "WON\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('!', "Boolean Operation", "NOT\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('y', "Boolean Operation", "ANY\\s+OF\\s*"));
-    regexes->append(new LexemeRegex('Y', "Boolean Operation", "ALL\\s+OF\\s*"));
+    regexes->append(new LexemeRegex('&', "Boolean Operation", "BOTH\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('|', "Boolean Operation", "EITHER\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('^', "Boolean Operation", "WON\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('!', "Boolean Operation", "NOT\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('y', "Boolean Operation", "ANY\\s+OF\\s+"));
+    regexes->append(new LexemeRegex('Y', "Boolean Operation", "ALL\\s+OF\\s+"));
 
-    regexes->append(new LexemeRegex('s', "String Operation", "SMOOSH\\s*"));
+    regexes->append(new LexemeRegex('s', "String Operation", "SMOOSH\\s+"));
 
-    regexes->append(new LexemeRegex('n', "Delimiter", "AN\\s*"));
-    regexes->append(new LexemeRegex('_', "Delimiter", "(HAI\\s+(\\d+(\\.\\d+)?)?\\s*|KTHNXBYE)\\s*"));
-    regexes->append(new LexemeRegex(']', "Infinite Arity Terminator", "MKAY\\s*"));
+    regexes->append(new LexemeRegex('n', "Delimiter", "AN\\s+"));
+    regexes->append(new LexemeRegex('_', "Delimiter", "(HAI\\s+(\\d+(\\.\\d+)?)?\\s+|KTHNXBYE)\\s+"));
+    regexes->append(new LexemeRegex(']', "Infinite Arity Terminator", "MKAY\\s+"));
 
-    regexes->append(new LexemeRegex('#', "Initialization", "ITZ\\s*"));
+    regexes->append(new LexemeRegex('#', "Initialization", "ITZ\\s+"));
 
     regexes->append(new LexemeRegex('c', "Comment", "BTW.*"));
 
-    regexes->append(new LexemeRegex('$', "Typecast Operator", "MAEK\\s*"));
-    regexes->append(new LexemeRegex('4', "Typecast Operator", "IS\\s+NOW\\s+A\\s*"));
+    regexes->append(new LexemeRegex('$', "Typecast Operator", "MAEK\\s+"));
+    regexes->append(new LexemeRegex('4', "Typecast Operator", "IS\\s+NOW\\s+A\\s+"));
 
-    regexes->append(new LexemeRegex('.', "Output", "VISIBLE\\s*"));
-    regexes->append(new LexemeRegex(',', "Input", "GIMMEH\\s*"));
+    regexes->append(new LexemeRegex('.', "Output", "VISIBLE\\s+"));
+    regexes->append(new LexemeRegex(',', "Input", "GIMMEH\\s+"));
 
-    regexes->append(new LexemeRegex('i', "Variable Declaration", "I\\s+HAS\\s+A\\s*"));
+    regexes->append(new LexemeRegex('i', "Variable Declaration", "I\\s+HAS\\s+A\\s+"));
 
-    regexes->append(new LexemeRegex(':', "Assignment Operator", "R\\s*"));
+    regexes->append(new LexemeRegex(':', "Assignment Operator", "R\\s+"));
 
-    regexes->append(new LexemeRegex('=', "Comparator", "BOTH\\s+SAEM\\s*"));
-    regexes->append(new LexemeRegex('z', "Comparator", "DIFFRINT\\s*"));
+    regexes->append(new LexemeRegex('=', "Comparator", "BOTH\\s+SAEM\\s+"));
+    regexes->append(new LexemeRegex('z', "Comparator", "DIFFRINT\\s+"));
 
-    regexes->append(new LexemeRegex('?', "If/Then Delimiter", "O\\s*RLY\\?\\s+|YA\\s*RLY\\s+|MEBBE\\s+|NO\\s*WAI\\s+|OIC\\s*"));
-    regexes->append(new LexemeRegex('[', "Case Delimiter", "WTF\\?\\s+|OMG\\s+|GTFO\\s*"));
+    regexes->append(new LexemeRegex('?', "If/Then Delimiter", "O\\s+RLY\\?\\s+|YA\\s+RLY\\s+|MEBBE\\s+|NO\\s+WAI\\s+|OIC\\s+"));
+    regexes->append(new LexemeRegex('[', "Case Delimiter", "WTF\\?\\s+|OMG\\s+|GTFO\\s+"));
 
-    regexes->append(new LexemeRegex('{', "Begin Loop Delimeter", "IM\\s+IN\\s+YR\\s*"));
-//    regexes->append(new LexemeRegex('!', "Loop Function", "(UPPIN|NERFIN)\\s+YR\\s*"));
-    regexes->append(new LexemeRegex('@', "Loop Condition", "(TIL|WILE)\\s*"));
-    regexes->append(new LexemeRegex('}', "End Loop Delimiter", "IM\\s+OUTTA\\s+YR\\s*"));
+    regexes->append(new LexemeRegex('{', "Begin Loop Delimeter", "IM\\s+IN\\s+YR\\s+"));
+//    regexes->append(new LexemeRegex('!', "Loop Function", "(UPPIN|NERFIN)\\s+YR\\s+"));
+    regexes->append(new LexemeRegex('@', "Loop Condition", "(TIL|WILE)\\s+"));
+    regexes->append(new LexemeRegex('}', "End Loop Delimiter", "IM\\s+OUTTA\\s+YR\\s+"));
 
-    regexes->append(new LexemeRegex('t', "Data Type", "" + typeR + "\\s*"));
+    regexes->append(new LexemeRegex('t', "Data Type", "" + typeR + "\\s+"));
 
-    regexes->append(new LexemeRegex('Q', "Invalid Use of Keyword", "(SUM|DIFF|PRODUKT|QUOSHUNT|MOD|BIGGR|SMALLR|BOTH|EITHER|WON|NOT|ANY|I|NOW|I|HAS|A|DIFFRINT|BOTH|SAEM|AND|BIGGR|SMALLR|O|YA|RLY|MEBBE|NO|WAI|IM|OUTTA|YR)\\s*"));
+    regexes->append(new LexemeRegex('Q', "Invalid Use of Keyword", "(SUM|DIFF|PRODUKT|QUOSHUNT|MOD|BIGGR|SMALLR|BOTH|EITHER|WON|NOT|ANY|I|NOW|I|HAS|A|DIFFRINT|BOTH|SAEM|AND|BIGGR|SMALLR|O|YA|RLY|MEBBE|NO|WAI|IM|OUTTA|YR)\\s+"));
 
     regexes->append(new LexemeRegex('f', "Float Literal", floatR + "\\s*"));
     regexes->append(new LexemeRegex('0', "Integer Literal", numR +"\\s*"));
@@ -95,7 +95,7 @@ void Interpreter::multiParse(QString s)
     QString line;
     QStringListIterator lineIterator(lines);
     while (lineIterator.hasNext())
-        this->parse(lineIterator.next().trimmed());
+        this->parse(lineIterator.next().trimmed() + "\n");
 }
 
 void Interpreter::populateLexemeTable(QTableWidget *w)
