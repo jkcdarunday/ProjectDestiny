@@ -136,13 +136,6 @@ void Interpreter::execute()
                 this->symbols->insert(lexemes->at(lastN+1).token, new VariableData('x',""));
             else qDebug() << "Syntax Error : Declaring already-existing variable :(";
 
-
-        //i has a var itz something
-        else if(syntaxCheck(lastN,"iv#t\n"))
-            if(!this->symbols->contains(lexemes->at(lastN+1).token))
-                this->symbols->insert(lexemes->at(lastN+1).token, new VariableData(lexemes->at(lastN+3).type,lexemes->at(lastN+3).token));
-            else qDebug() << "Syntax Error : Declaring already-existing variable to string :(";
-
         //i has a var itz expression
         else if(syntaxCheck(lastN,"iv#o")){
             int nn=lastN;
@@ -153,14 +146,6 @@ void Interpreter::execute()
             else if(!this->symbols->contains(lexemes->at(lastN+1).token))
                 this->symbols->insert(lexemes->at(lastN+1).token, tmp);
         }
-
-        //var r loli
-        else if(syntaxCheck(lastN,"v:t\n"))
-            if(this->symbols->contains(lexemes->at(lastN).token)){
-                this->symbols->value(lexemes->at(lastN).token)->value=lexemes->at(lastN+2).token;
-                this->symbols->value(lexemes->at(lastN).token)->type=lexemes->at(lastN+2).type;
-            }else qDebug() << "Syntax Error : Assigning string to non-existant variable :(";
-
 
         //var r expression
         else if(syntaxCheck(lastN,"v:o")){
@@ -180,11 +165,6 @@ void Interpreter::execute()
             if(this->symbols->contains(this->lexemes->at(lastN+1).token) && QString("f01\"").contains(this->symbols->value(this->lexemes->at(lastN+1).token)->type))
                 emit output(this->symbols->value(this->lexemes->at(lastN+1).token)->value);
             else qDebug() << "Syntax Error : Printed a variable that does not exist or is noob:(";
-
-
-        //visible "loli"
-        else if(syntaxCheck(lastN, ".t\n"))
-            emit output(this->lexemes->at(lastN+1).token);
 
         //blank space
         else if(syntaxCheck(lastN,"\n"));
@@ -211,7 +191,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
     for(int i=0;i<ss;i++){
         if(s.at(i) != lexemes->at(si+i).type
                 && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
-                && !(s.at(i) == 'o' && QString("+-*/%><&^|!yY=z").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("\"01f+-*/%><&^|!yY=z").contains(lexemes->at(si+i).type))
                 )
             return false;
     }
