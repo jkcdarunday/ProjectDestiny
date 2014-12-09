@@ -176,7 +176,7 @@ void Interpreter::execute()
         //expression
         else if(syntaxCheck(lastN, "o")){
             int nn=lastN;
-            do nn++; while(nn+1!=lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n');
+            while(nn+1<lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n')nn++;
             VariableData *tmp = this->processExpression(lastN,nn);
             if(tmp==NULL)
                 qDebug() << "Syntax Error : Problem executing expression";
@@ -186,6 +186,65 @@ void Interpreter::execute()
                 qDebug() << "Syntax Error : Variable IT does not exist";
         }
 
+        else if(syntaxCheck(lastN, "?\n")){
+            VariableData *it = this->symbols->at(0)->value("IT");
+            this->symbols->push(new QHash<QString,VariableData*>());
+            if(it->type=='1')
+                this->symbols->top()->insert("_RES", new VariableData(it->type,it->value));
+            else
+                this->symbols->top()->insert("_RES", new VariableData('1', "FAIL"));
+
+        }
+
+        else if(syntaxCheck(lastN, "g\n")){
+            bool cond = false;
+            if(this->symbols->top()->contains("_RES"))
+                cond = QString("WIN").compare(this->symbols->top()->value("_RES")->value,Qt::CaseInsensitive)==0;
+            int nextN=lastN+2;
+            int level = this->symbols->size()-1;
+            int thisLevel = level;
+            if(!cond && nextN<this->lexemes->size()){
+                do{
+                    if(QString("Gwk").contains(this->lexemes->at(nextN).type)
+                            && level == thisLevel){
+                        lastN=nextN-1;
+                        break;
+                    }
+                    else if(this->lexemes->at(nextN).type=='?') level++;
+                    else if(this->lexemes->at(nextN).type=='k') level--;
+                    do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
+                }while(lastN<=lexemes->size()-1);
+            }
+        }
+
+        else if(syntaxCheck(lastN, "w\n")){
+            bool cond = false;
+            if(this->symbols->top()->contains("_RES"))
+                cond = QString("WIN").compare(this->symbols->top()->value("_RES")->value,Qt::CaseInsensitive)==0;
+            int nextN=lastN+2;
+            int level = this->symbols->size()-1;
+            int thisLevel = level;
+            if(cond && nextN<this->lexemes->size()){
+                do{
+                    if(this->lexemes->at(nextN).type=='k'
+                            && level == thisLevel){
+                        lastN=nextN-1;
+                        break;
+                    }
+                    else if(this->lexemes->at(nextN).type=='?') level++;
+                    else if(this->lexemes->at(nextN).type=='k') level--;
+                    do nextN++; while(nextN!=lexemes->size()-1 && this->lexemes->at(nextN-1).type != '\n');
+                }while(lastN<=lexemes->size()-1);
+            }
+        }
+
+        else if(syntaxCheck(lastN, "k\n")){
+            if(this->symbols->size()>1)
+                this->symbols->pop();
+            else
+                qDebug() << "Syntax Error: Closing a scope that has not been opened.";
+        }
+
         //blank space
         else if(syntaxCheck(lastN,"\n"));
 
@@ -193,7 +252,7 @@ void Interpreter::execute()
             qDebug() << "Syntax Error near : " << this->lexemes->at(lastN).token;
 
         //go to the next newline
-        do lastN++; while(lastN!=lexemes->size()-1 && this->lexemes->at(lastN-1).type != '\n');
+        do lastN++; while(lastN<=lexemes->size()-1 && this->lexemes->at(lastN-1).type != '\n');
     }while(lastN<=lexemes->size()-1);
 }
 
