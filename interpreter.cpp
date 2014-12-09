@@ -235,6 +235,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
         }
 
         else if(QString("+-*/%><").contains(type)){
+            if(s.size()<2)return NULL;
             VariableData *arg2=s.pop();
             VariableData *arg1=s.pop();
             if(!QString("0f").contains(arg1->type))return NULL;
@@ -263,8 +264,11 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
             VariableData *arg2=NULL;
             bool b2=false;
             if(type!='!'){
+                if(s.size()<2) return NULL;
                 arg2=s.pop();
                 b2 = QRegExp("WIN",Qt::CaseInsensitive).exactMatch(arg2->value);
+            } else {
+                if(s.size()<1) return NULL;
             }
             VariableData *arg1=s.pop();
             bool b1 = QRegExp("WIN",Qt::CaseInsensitive).exactMatch(arg1->value);
@@ -311,6 +315,7 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
         }
 
         else if(QString("=z").contains(type)){
+            if(s.size()<2) return NULL;
             VariableData *arg2=s.pop();
             VariableData *arg1=s.pop();
             bool result=false;
