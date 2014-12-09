@@ -160,12 +160,6 @@ void Interpreter::execute()
                 qDebug() << "Syntax Error : Variable " + this->lexemes->at(lastN).token + " does not exist";
         }
 
-        //visible var
-        else if(syntaxCheck(lastN, ".v\n"))
-            if(this->symbols->contains(this->lexemes->at(lastN+1).token) && QString("f01\"").contains(this->symbols->value(this->lexemes->at(lastN+1).token)->type))
-                emit output(this->symbols->value(this->lexemes->at(lastN+1).token)->value);
-            else qDebug() << "Syntax Error : Printed a variable that does not exist or is noob:(";
-
         //blank space
         else if(syntaxCheck(lastN,"\n"));
 
@@ -191,7 +185,7 @@ bool Interpreter::syntaxCheck(int si, QString s)
     for(int i=0;i<ss;i++){
         if(s.at(i) != lexemes->at(si+i).type
                 && !(s.at(i) == 't' && QString("01f\"").contains(lexemes->at(si+i).type))
-                && !(s.at(i) == 'o' && QString("\"01f+-*/%><&^|!yY=z").contains(lexemes->at(si+i).type))
+                && !(s.at(i) == 'o' && QString("\"01f+-*/%><&^|!yY=z.").contains(lexemes->at(si+i).type))
                 )
             return false;
     }
@@ -317,6 +311,20 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
             delete arg1;
             delete arg2;
             s.push(new VariableData('1',QString(result?"WIN":"FAIL")));
+        }
+
+        else if(type == '.'){
+            int count=0;
+            while(s.size()>0){
+                count++;
+                VariableData *arg1=s.pop();
+                if(QString("01f\"").contains(arg1->type)){
+                    emit output(arg1->value);
+                } else {
+                    return NULL;
+                }
+            }
+            s.push(new VariableData('0',QString::number(count)));
         }
 
         else if(type=='n');
