@@ -5,7 +5,7 @@ Interpreter::Interpreter(QObject *parent) :
 {
     lexemes = new QList<Lexeme>();
     regexes = new QList<LexemeRegex*>();
-    inputBuffer = new QStack<QString*>();
+    inputBuffer = new QStack<QString>();
     symbols = new QStack<QHash<QString, VariableData*>*>();
     symbols->push(new QHash<QString,VariableData*>());
 
