@@ -51,13 +51,13 @@ Interpreter::Interpreter(QObject *parent) :
     regexes->append(new LexemeRegex(':', "Assignment Operator", "R\\s*"));
 
     regexes->append(new LexemeRegex('=', "Comparator", "BOTH\\s+SAEM\\s*"));
-    regexes->append(new LexemeRegex('/', "Comparator", "DIFFRINT\\s*"));
+    regexes->append(new LexemeRegex('!', "Comparator", "DIFFRINT\\s*"));
 
     regexes->append(new LexemeRegex('?', "If/Then Delimiter", "O\\s*RLY\\?\\s+|YA\\s*RLY\\s+|MEBBE\\s+|NO\\s*WAI\\s+|OIC\\s*"));
     regexes->append(new LexemeRegex('[', "Case Delimiter", "WTF\\?\\s+|OMG\\s+|GTFO\\s*"));
 
     regexes->append(new LexemeRegex('{', "Begin Loop Delimeter", "IM\\s+IN\\s+YR\\s*"));
-    regexes->append(new LexemeRegex('!', "Loop Function", "(UPPIN|NERFIN)\\s+YR\\s*"));
+//    regexes->append(new LexemeRegex('!', "Loop Function", "(UPPIN|NERFIN)\\s+YR\\s*"));
     regexes->append(new LexemeRegex('@', "Loop Condition", "(TIL|WILE)\\s*"));
     regexes->append(new LexemeRegex('}', "End Loop Delimiter", "IM\\s+OUTTA\\s+YR\\s*"));
 
@@ -310,24 +310,24 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
 
         }
 
-        else if(QString("=/").contains(type)){
+        else if(QString("=!").contains(type)){
             VariableData *arg2=s.pop();
             VariableData *arg1=s.pop();
             bool result=false;
             if(QString("0f").contains(arg1->type) && QString("0f").contains(arg2->type)){
                 double v1 = arg1->value.toDouble();
                 double v2 = arg2->value.toDouble();
-                if((type=='=' && v1==v2) || (type=='/' && v1!=v2)) result=true;
+                if((type=='=' && v1==v2) || (type=='!' && v1!=v2)) result=true;
             }
 
             else if(arg1->type=='"' && arg2->type=='"'){
                 result = arg1->value.trimmed().compare(arg2->value.trimmed())==0;
-                if(type=='/') result=!result;
+                if(type=='!') result=!result;
             }
 
             else if(arg1->type=='1' && arg2->type=='1'){
                 result = arg1->value.trimmed().compare(arg2->value.trimmed(),Qt::CaseInsensitive)==0;
-                if(type=='/') result=!result;
+                if(type=='!') result=!result;
             }
             delete arg1;
             delete arg2;
