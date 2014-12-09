@@ -94,7 +94,7 @@ void Interpreter::multiParse(QString s)
     QString line;
     QStringListIterator lineIterator(lines);
     while (lineIterator.hasNext())
-        this->parse(lineIterator.next());
+        this->parse(lineIterator.next().trimmed());
 }
 
 void Interpreter::populateLexemeTable(QTableWidget *w)
