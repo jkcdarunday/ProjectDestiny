@@ -322,10 +322,12 @@ Interpreter::VariableData *Interpreter::processExpression(int start, int end)
 
             else if(arg1->type=='"' && arg2->type=='"'){
                 result = arg1->value.trimmed().compare(arg2->value.trimmed())==0;
+                if(type=='/') result=!result;
             }
 
             else if(arg1->type=='1' && arg2->type=='1'){
                 result = arg1->value.trimmed().compare(arg2->value.trimmed(),Qt::CaseInsensitive)==0;
+                if(type=='/') result=!result;
             }
             delete arg1;
             delete arg2;
