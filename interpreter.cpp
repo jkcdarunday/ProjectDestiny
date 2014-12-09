@@ -127,6 +127,7 @@ void Interpreter::execute()
 {
     int lastN = 0;
     if(this->lexemes->isEmpty()) return;
+    symbols->insert("IT", new VariableData('x',QString("")));
     int lineNumber = 0;
     do{
         lineNumber++;
@@ -158,6 +159,19 @@ void Interpreter::execute()
                 this->symbols->insert(lexemes->at(lastN).token, tmp);
             else
                 qDebug() << "Syntax Error : Variable " + this->lexemes->at(lastN).token + " does not exist";
+        }
+
+        //expression
+        else if(syntaxCheck(lastN, "o")){
+            int nn=lastN;
+            do nn++; while(nn+1!=lexemes->size()-1 && this->lexemes->at(nn+1).type != '\n');
+            VariableData *tmp = this->processExpression(lastN,nn);
+            if(tmp==NULL)
+                qDebug() << "Syntax Error : Problem executing expression";
+            else if(this->symbols->contains("IT"))
+                this->symbols->insert(lexemes->at(lastN).token, tmp);
+            else
+                qDebug() << "Syntax Error : Variable IT does not exist";
         }
 
         //blank space
